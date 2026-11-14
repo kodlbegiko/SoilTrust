@@ -59,7 +59,7 @@ the dependencies.
 
 ## Streamlit Community Cloud deployment
 
-1. Review and merge the v0.3 pull request into main after tests pass.
+1. Use the v0.3 code on the main branch and confirm GitHub Actions tests pass.
 2. Sign in at https://share.streamlit.io with the GitHub account that can
    access https://github.com/kodlbegiko/SoilTrust .
 3. Select **Create app** → existing repository and set:
@@ -72,9 +72,6 @@ the dependencies.
 5. Visit the public app in a private browser window. Verify default synthetic
    result is ABSTAIN, changing coordinates reruns the engine, downloads work,
    and simulated upstream errors do not become PASS.
-
-For a pre-merge preview, select branch
-feat/soiltrust-v0.3-streamlit-demo rather than main in Community Cloud.
 
 Keep examples/report.html locally as an offline backup for a meeting.
 Community Cloud can sleep or cold-start, and optional live calls can fail.
