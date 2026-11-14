@@ -1,12 +1,16 @@
-> **v0.3 interactive research demo:** Streamlit interface source is available on the
-> [v0.3 feature branch](https://github.com/kodlbegiko/SoilTrust/tree/feat/soiltrust-v0.3-streamlit-demo).
-> Install with pip install -r requirements.txt and start with streamlit run streamlit_app.py.
-> See [interactive demo instructions](docs/INTERACTIVE_DEMO.md) for synthetic
-> data, upstream failure behavior, tests and deployment instructions.
-> The v0.2 deterministic core is unchanged. Source availability does not imply
-> a successfully deployed public URL.
+# SoilTrust v0.3 — Interactive Research Demo
 
-# SoilTrust V0.2
+**Interactive research demo:** Run with pip install -r requirements.txt
+and streamlit run streamlit_app.py. The app calls the existing v0.2
+evaluation engine for every submitted coordinate and provides issue codes,
+full evidence provenance and downloadable JSON.
+
+See [interactive demo instructions](docs/INTERACTIVE_DEMO.md) for synthetic
+data limitations, tests, the official-data boundary and Streamlit Community
+Cloud deployment steps. The main branch includes the full demo; a working
+public URL will exist only after Community Cloud deployment.
+
+## Python evaluation core (v0.2)
 
 **Reliability before recommendation.**
 
