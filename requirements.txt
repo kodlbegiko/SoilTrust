@@ -1,4 +1,4 @@
-# Install the existing src/soiltrust package so imports work on Community Cloud.
+# Install the existing src/soiltrust package on Community Cloud.
 -e .
-# Keep the frontend dependency separate from the V0.2 core.
-streamlit>=1.40,<2
+# Pin tested frontend version for repeatability.
+streamlit==1.67.0
