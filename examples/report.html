@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SoilTrust V0.2 report</title>
+<style>
+body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; margin: 0; background: #f6f8fa; color: #17212b; }
+main { max-width: 1040px; margin: 36px auto; padding: 0 20px 48px; }
+header { display:flex; justify-content:space-between; gap:24px; align-items:flex-start; }
+h1 { margin:0; font-size:32px; } .tag { color:#506273; margin-top:6px; }
+.badge { padding:10px 16px; border-radius:999px; font-weight:700; }
+.badge.abstain { background:#ffe7e7; color:#9b1c1c; } .badge.caution { background:#fff2cc; color:#7a5700; } .badge.pass { background:#daf5e4; color:#146c38; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin:22px 0; }
+.card { background:white; border:1px solid #dfe5eb; border-radius:14px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,.04); }
+.k { color:#687887; font-size:12px; text-transform:uppercase; letter-spacing:.05em; } .v { font-size:22px; font-weight:700; margin-top:6px; }
+.source { font-size:13px; line-height:1.45; margin-top:8px; color:#506273; overflow-wrap:anywhere; }
+table { width:100%; border-collapse:collapse; background:white; } th,td { border-bottom:1px solid #e7ebef; padding:10px; text-align:left; vertical-align:top; font-size:14px; }
+section { margin-top:22px; } h2 { font-size:18px; } code { font-size:12px; }
+pre { white-space:pre-wrap; background:#0f1720; color:#e5edf5; padding:16px; border-radius:12px; overflow:auto; font-size:12px; }
+.notice { border-left:4px solid #577590; padding:12px 14px; background:#eef4f8; }
+</style>
+</head>
+<body><main>
+<header><div><h1>SoilTrust V0.2</h1><div class="tag">Reliability before recommendation</div></div><div class="badge abstain">ABSTAIN · 6/100</div></header>
+<section class="notice">SoilTrust abstains from a field-level recommendation (reliability score 6/100). Primary reason: The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked. The system may still display source data and limitations, but it will not convert them into an agronomic instruction.</section>
+<div class="grid">
+<div class="card"><div class="k">Requested location</div><div class="v">24.1236, 120.6753</div></div>
+<div class="card"><div class="k">Soil pH</div><div class="v">6.3</div></div>
+<div class="card"><div class="k">Organic matter</div><div class="v">2.4%</div></div>
+<div class="card"><div class="k">CEC</div><div class="v">14.2 cmol+/kg</div></div>
+<div class="card"><div class="k">Model soil moisture</div><div class="v">0.31 m³/m³</div></div>
+<div class="card"><div class="k">7-day precipitation</div><div class="v">n/a</div></div>
+<div class="card"><div class="k">7-day ET₀</div><div class="v">n/a</div></div>
+<div class="card"><div class="k">Field decision</div><div class="v">Blocked</div></div>
+</div>
+<section><h2>Evidence sources</h2><div class="grid"><div class="card"><div class="k">Soil</div><div class="source">MOA G32 schema demo fixture</div></div><div class="card"><div class="k">Weather / soil-state model</div><div class="source">SoilTrust offline weather fixture</div></div></div></section>
+<section><h2>Quality & evidence checks</h2><table><thead><tr><th>Severity</th><th>Rule</th><th>Finding</th></tr></thead><tbody><tr><td>CRITICAL</td><td><code>soil.demo_fixture</code></td><td>The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked.</td></tr><tr><td>WARNING</td><td><code>soil.stale</code></td><td>Soil observation is older than five years; current field conditions may differ.</td></tr><tr><td>CRITICAL</td><td><code>weather.demo_fixture</code></td><td>The weather record is a demo fixture, not live model output. Field-level decisions are blocked.</td></tr><tr><td>WARNING</td><td><code>cross_source.spatial_scale_mismatch</code></td><td>Weather/model data are much coarser than the soil grid; do not interpret both as the same field-scale measurement.</td></tr></tbody></table></section>
+<section><h2>What evidence is needed next?</h2><ul><li>Obtain an official/local field soil record for the exact site.</li><li>Collect a recent soil sample or verified local soil analysis before field-level use.</li><li>Retrieve live or reanalysis weather/model data for the site and time window.</li><li>Do not infer field-scale conditions from a weather-model grid without independent local validation.</li></ul></section>
+<section><h2>Raw structured report</h2><pre>{
+  &quot;generated_at&quot;: &quot;2026-11-03T09:17:25+00:00&quot;,
+  &quot;requested_location&quot;: {
+    &quot;latitude&quot;: 24.1236,
+    &quot;longitude&quot;: 120.6753
+  },
+  &quot;soil&quot;: {
+    &quot;record_id&quot;: &quot;DEMO-TXG-001&quot;,
+    &quot;latitude&quot;: 24.1236,
+    &quot;longitude&quot;: 120.6753,
+    &quot;ph&quot;: 6.3,
+    &quot;organic_matter_pct&quot;: 2.4,
+    &quot;cec_cmol_kg&quot;: 14.2,
+    &quot;texture&quot;: &quot;silt loam&quot;,
+    &quot;observed_on&quot;: &quot;2020-07-24&quot;,
+    &quot;distance_m&quot;: 0.0,
+    &quot;provenance&quot;: {
+      &quot;source_name&quot;: &quot;MOA G32 schema demo fixture&quot;,
+      &quot;source_url&quot;: &quot;https://data.gov.tw/dataset/112848&quot;,
+      &quot;source_type&quot;: &quot;demo_fixture&quot;,
+      &quot;retrieved_at&quot;: &quot;2026-11-03T09:17:25+00:00&quot;,
+      &quot;spatial_resolution_m&quot;: 250.0,
+      &quot;temporal_resolution&quot;: &quot;periodic survey&quot;,
+      &quot;observation_time&quot;: &quot;2020-07-24&quot;,
+      &quot;license&quot;: &quot;Government Data Open Licence Taiwan v1.0 (source dataset); this row itself is synthetic&quot;,
+      &quot;notes&quot;: &quot;Synthetic representative row for pipeline demonstration only; NOT an official soil observation.&quot;
+    },
+    &quot;demo_fixture&quot;: true,
+    &quot;source_attributes&quot;: {}
+  },
+  &quot;weather&quot;: {
+    &quot;latitude&quot;: 24.1236,
+    &quot;longitude&quot;: 120.6753,
+    &quot;soil_moisture_m3_m3&quot;: 0.31,
+    &quot;soil_temperature_c&quot;: 24.8,
+    &quot;precipitation_mm&quot;: 0.0,
+    &quot;observed_at&quot;: &quot;2026-11-03T12:00&quot;,
+    &quot;provenance&quot;: {
+      &quot;source_name&quot;: &quot;SoilTrust offline weather fixture&quot;,
+      &quot;source_url&quot;: &quot;local://data/demo_weather.json&quot;,
+      &quot;source_type&quot;: &quot;demo_fixture&quot;,
+      &quot;retrieved_at&quot;: &quot;2026-11-03T09:17:25+00:00&quot;,
+      &quot;spatial_resolution_m&quot;: 9000,
+      &quot;temporal_resolution&quot;: &quot;hourly-demo&quot;,
+      &quot;observation_time&quot;: &quot;2026-11-03T12:00&quot;,
+      &quot;license&quot;: &quot;Demo only&quot;,
+      &quot;notes&quot;: &quot;Synthetic representative value; not observational evidence.&quot;
+    },
+    &quot;demo_fixture&quot;: true,
+    &quot;precipitation_7d_mm&quot;: null,
+    &quot;et0_7d_mm&quot;: null,
+    &quot;grid_cell_distance_m&quot;: null
+  },
+  &quot;issues&quot;: [
+    {
+      &quot;code&quot;: &quot;soil.demo_fixture&quot;,
+      &quot;severity&quot;: &quot;critical&quot;,
+      &quot;message&quot;: &quot;The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked.&quot;,
+      &quot;evidence&quot;: {}
+    },
+    {
+      &quot;code&quot;: &quot;soil.stale&quot;,
+      &quot;severity&quot;: &quot;warning&quot;,
+      &quot;message&quot;: &quot;Soil observation is older than five years; current field conditions may differ.&quot;,
+      &quot;evidence&quot;: {
+        &quot;age_years&quot;: 6.3
+      }
+    },
+    {
+      &quot;code&quot;: &quot;weather.demo_fixture&quot;,
+      &quot;severity&quot;: &quot;critical&quot;,
+      &quot;message&quot;: &quot;The weather record is a demo fixture, not live model output. Field-level decisions are blocked.&quot;,
+      &quot;evidence&quot;: {}
+    },
+    {
+      &quot;code&quot;: &quot;cross_source.spatial_scale_mismatch&quot;,
+      &quot;severity&quot;: &quot;warning&quot;,
+      &quot;message&quot;: &quot;Weather/model data are much coarser than the soil grid; do not interpret both as the same field-scale measurement.&quot;,
+      &quot;evidence&quot;: {
+        &quot;soil_resolution_m&quot;: 250.0,
+        &quot;weather_resolution_m&quot;: 9000,
+        &quot;ratio&quot;: 36.0
+      }
+    }
+  ],
+  &quot;status&quot;: &quot;ABSTAIN&quot;,
+  &quot;reliability_score&quot;: 6,
+  &quot;can_make_field_decision&quot;: false,
+  &quot;explanation&quot;: &quot;SoilTrust abstains from a field-level recommendation (reliability score 6/100). Primary reason: The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked. The system may still display source data and limitations, but it will not convert them into an agronomic instruction.&quot;,
+  &quot;next_measurements&quot;: [
+    &quot;Obtain an official/local field soil record for the exact site.&quot;,
+    &quot;Collect a recent soil sample or verified local soil analysis before field-level use.&quot;,
+    &quot;Retrieve live or reanalysis weather/model data for the site and time window.&quot;,
+    &quot;Do not infer field-scale conditions from a weather-model grid without independent local validation.&quot;
+  ]
+}</pre></section>
+</main></body></html>
