@@ -3,7 +3,7 @@ name: SoilTrust research demo checks
 on:
   push:
     branches:
-      - feat/soiltrust-v0.3-streamlit-demo
+      - main
   pull_request:
 
 jobs:
