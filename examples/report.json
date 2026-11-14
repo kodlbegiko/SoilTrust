@@ -1,0 +1,96 @@
+{
+  "generated_at": "2026-11-03T09:17:25+00:00",
+  "requested_location": {
+    "latitude": 24.1236,
+    "longitude": 120.6753
+  },
+  "soil": {
+    "record_id": "DEMO-TXG-001",
+    "latitude": 24.1236,
+    "longitude": 120.6753,
+    "ph": 6.3,
+    "organic_matter_pct": 2.4,
+    "cec_cmol_kg": 14.2,
+    "texture": "silt loam",
+    "observed_on": "2020-07-24",
+    "distance_m": 0.0,
+    "provenance": {
+      "source_name": "MOA G32 schema demo fixture",
+      "source_url": "https://data.gov.tw/dataset/112848",
+      "source_type": "demo_fixture",
+      "retrieved_at": "2026-11-03T09:17:25+00:00",
+      "spatial_resolution_m": 250.0,
+      "temporal_resolution": "periodic survey",
+      "observation_time": "2020-07-24",
+      "license": "Government Data Open Licence Taiwan v1.0 (source dataset); this row itself is synthetic",
+      "notes": "Synthetic representative row for pipeline demonstration only; NOT an official soil observation."
+    },
+    "demo_fixture": true,
+    "source_attributes": {}
+  },
+  "weather": {
+    "latitude": 24.1236,
+    "longitude": 120.6753,
+    "soil_moisture_m3_m3": 0.31,
+    "soil_temperature_c": 24.8,
+    "precipitation_mm": 0.0,
+    "observed_at": "2026-11-03T12:00",
+    "provenance": {
+      "source_name": "SoilTrust offline weather fixture",
+      "source_url": "local://data/demo_weather.json",
+      "source_type": "demo_fixture",
+      "retrieved_at": "2026-11-03T09:17:25+00:00",
+      "spatial_resolution_m": 9000,
+      "temporal_resolution": "hourly-demo",
+      "observation_time": "2026-11-03T12:00",
+      "license": "Demo only",
+      "notes": "Synthetic representative value; not observational evidence."
+    },
+    "demo_fixture": true,
+    "precipitation_7d_mm": null,
+    "et0_7d_mm": null,
+    "grid_cell_distance_m": null
+  },
+  "issues": [
+    {
+      "code": "soil.demo_fixture",
+      "severity": "critical",
+      "message": "The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked.",
+      "evidence": {}
+    },
+    {
+      "code": "soil.stale",
+      "severity": "warning",
+      "message": "Soil observation is older than five years; current field conditions may differ.",
+      "evidence": {
+        "age_years": 6.3
+      }
+    },
+    {
+      "code": "weather.demo_fixture",
+      "severity": "critical",
+      "message": "The weather record is a demo fixture, not live model output. Field-level decisions are blocked.",
+      "evidence": {}
+    },
+    {
+      "code": "cross_source.spatial_scale_mismatch",
+      "severity": "warning",
+      "message": "Weather/model data are much coarser than the soil grid; do not interpret both as the same field-scale measurement.",
+      "evidence": {
+        "soil_resolution_m": 250.0,
+        "weather_resolution_m": 9000,
+        "ratio": 36.0
+      }
+    }
+  ],
+  "status": "ABSTAIN",
+  "reliability_score": 6,
+  "can_make_field_decision": false,
+  "explanation": "SoilTrust abstains from a field-level recommendation (reliability score 6/100). Primary reason: The soil record is a demo fixture, not official field evidence. Field-level decisions are blocked. The system may still display source data and limitations, but it will not convert them into an agronomic instruction.",
+  "next_measurements": [
+    "Obtain an official/local field soil record for the exact site.",
+    "Collect a recent soil sample or verified local soil analysis before field-level use.",
+    "Retrieve live or reanalysis weather/model data for the site and time window.",
+    "Do not infer field-scale conditions from a weather-model grid without independent local validation."
+  ]
+}

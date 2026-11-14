@@ -1,0 +1,15 @@
+{
+  "dataset_id": "G32",
+  "dataset_name": "全台農田平地表土層土壤網格肥力資訊",
+  "dataset_page": "https://data.gov.tw/dataset/112848",
+  "metadata_endpoint": "https://data.moa.gov.tw/api/FileToJson.ashx?DataId=G32&DataTable=OpenDataList",
+  "official_metadata_entry": {
+    "FileName": "全台平地農田表土層土壤網格肥力資訊_TWD9",
+    "FileUrl": "https://data.moa.gov.tw/OpenData/GetOpenDataFile.aspx?id=G32&FileType=DataMore&RID=2009",
+    "CreateDate": "2020-07-24"
+  },
+  "dataset_declared_grid_m": 250,
+  "dataset_update_frequency": "每5年",
+  "license": "政府資料開放授權條款-第1版",
+  "note": "Metadata-only snapshot. The official G32 binary is intentionally not bundled; fetch it from the official FileUrl and hash locally before use."
+}
