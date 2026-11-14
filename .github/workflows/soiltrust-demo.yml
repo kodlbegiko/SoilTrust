@@ -22,3 +22,13 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Check Python source compiles
         run: python -m compileall -q streamlit_app.py src/soiltrust
+      - name: Smoke test Streamlit application rendering
+        run: |
+          python - <<'PY'
+          from streamlit.testing.v1 import AppTest
+          app = AppTest.from_file("streamlit_app.py", default_timeout=30).run()
+          failures = [item.message for item in app.exception]
+          if failures:
+              raise AssertionError(f"Streamlit errors: {failures}")
+          print("Streamlit initial render passed")
+          PY
