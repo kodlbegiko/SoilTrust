@@ -1,0 +1,4 @@
+# Install the existing src/soiltrust package on Community Cloud.
+-e .
+# Pin tested frontend version for repeatability.
+streamlit==1.67.0
