@@ -1,0 +1,62 @@
+name: Capture verified SoilTrust live demo screenshot
+on:
+  push:
+    branches: [docs/real-demo-capture-20261116]
+    paths: [.github/workflows/capture-live-demo.yml]
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Playwright Chromium
+        run: |
+          python -m pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+      - name: Capture genuine live website and verify contents
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib, time
+          from playwright.sync_api import sync_playwright
+          url="https://soiltrust-ru7xb8m8ncnusfs2ow9ljy.streamlit.app/"
+          out=pathlib.Path("docs/assets/soiltrust-live-demo-2026-11-16.png")
+          out.parent.mkdir(parents=True,exist_ok=True)
+          with sync_playwright() as pw:
+              browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+              page=browser.new_page(viewport={"width":1600,"height":1050},device_scale_factor=1)
+              page.goto(url, wait_until="domcontentloaded", timeout=120000)
+              required=("SoilTrust","ABSTAIN","6/100","Interactive Evaluation")
+              text=""
+              for attempt in range(24):
+                  page.wait_for_timeout(5000)
+                  try:
+                      text=page.locator("body").inner_text(timeout=10000)
+                  except Exception:
+                      continue
+                  print("check",attempt+1,"page title:",page.title(),"seen:",[x for x in required if x in text],flush=True)
+                  if all(x in text for x in required):
+                      break
+                  if "Yes, get this app back up" in text:
+                      page.get_by_text("Yes, get this app back up").click()
+              else:
+                  raise RuntimeError("Real app verification failed: missing "+repr([x for x in required if x not in text])+"; observed "+repr(text[:500]))
+              if "Unexpected Application Error" in text or "Unable to preload CSS" in text:
+                  raise RuntimeError("Site showed an error instead of app")
+              page.screenshot(path=str(out),full_page=False,animations="disabled")
+              browser.close()
+          print("Verified screenshot:",out,"bytes:",out.stat().st_size,"sha256:",hashlib.sha256(out.read_bytes()).hexdigest(),flush=True)
+          PY
+      - name: Publish verified screenshot to capture branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/assets/soiltrust-live-demo-2026-11-16.png
+          git commit -m "docs: capture verified real SoilTrust Streamlit demo" || exit 1
+          git push
