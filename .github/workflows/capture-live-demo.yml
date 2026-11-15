@@ -21,7 +21,7 @@ jobs:
       - name: Capture actual running app (offline synthetic fixture)
         run: |
           python - <<'PY'
-          import hashlib, pathlib, subprocess, sys, time
+          import hashlib, pathlib, subprocess, sys, time, socket
           from playwright.sync_api import sync_playwright
 
           out=pathlib.Path("docs/assets/soiltrust-v03-genuine-streamlit-demo.png")
@@ -29,11 +29,19 @@ jobs:
           server=subprocess.Popen([sys.executable,"-m","streamlit","run","streamlit_app.py",
               "--server.headless=true","--server.address=127.0.0.1",
               "--server.port=8501","--browser.gatherUsageStats=false"],
-              stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+              stdout=open("streamlit-server.log","w"), stderr=subprocess.STDOUT)
           try:
               with sync_playwright() as pw:
                   browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
                   page=browser.new_page(viewport={"width":1680,"height":960},device_scale_factor=1)
+                  for attempt in range(60):
+                      if server.poll() is not None:
+                          raise RuntimeError("Streamlit exited early: "+pathlib.Path("streamlit-server.log").read_text()[-2000:])
+                      try:
+                          with socket.create_connection(("127.0.0.1",8501),timeout=1): break
+                      except OSError: time.sleep(0.5)
+                  else:
+                      raise RuntimeError("Streamlit port unavailable: "+pathlib.Path("streamlit-server.log").read_text()[-2000:])
                   page.goto("http://127.0.0.1:8501", wait_until="domcontentloaded", timeout=90000)
                   required=("SoilTrust","ABSTAIN","6/100","Interactive Evaluation")
                   for attempt in range(40):
