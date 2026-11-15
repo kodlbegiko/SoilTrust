@@ -1,4 +1,4 @@
-name: Capture verified SoilTrust live demo screenshot
+name: Capture verified SoilTrust demo (actual Streamlit application)
 on:
   push:
     branches: [docs/real-demo-capture-20261116]
@@ -8,55 +8,56 @@ permissions:
 jobs:
   capture:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install Playwright Chromium
+      - name: Install actual app and Chromium
         run: |
-          python -m pip install playwright==1.56.0
+          python -m pip install -r requirements.txt playwright==1.56.0
           python -m playwright install --with-deps chromium
-      - name: Capture genuine live website and verify contents
+      - name: Capture actual running app (offline synthetic fixture)
         run: |
           python - <<'PY'
-          import hashlib, json, pathlib, time
+          import hashlib, pathlib, subprocess, sys, time
           from playwright.sync_api import sync_playwright
-          url="https://soiltrust-ru7xb8m8ncnusfs2ow9ljy.streamlit.app/"
-          out=pathlib.Path("docs/assets/soiltrust-live-demo-2026-11-16.png")
-          out.parent.mkdir(parents=True,exist_ok=True)
-          with sync_playwright() as pw:
-              browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
-              page=browser.new_page(viewport={"width":1600,"height":1050},device_scale_factor=1)
-              page.goto(url, wait_until="domcontentloaded", timeout=120000)
-              required=("SoilTrust","ABSTAIN","6/100","Interactive Evaluation")
-              text=""
-              for attempt in range(24):
-                  page.wait_for_timeout(5000)
-                  try:
+
+          out=pathlib.Path("docs/assets/soiltrust-v03-genuine-streamlit-demo.png")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          server=subprocess.Popen([sys.executable,"-m","streamlit","run","streamlit_app.py",
+              "--server.headless=true","--server.address=127.0.0.1",
+              "--server.port=8501","--browser.gatherUsageStats=false"],
+              stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+                  page=browser.new_page(viewport={"width":1680,"height":960},device_scale_factor=1)
+                  page.goto("http://127.0.0.1:8501", wait_until="domcontentloaded", timeout=90000)
+                  required=("SoilTrust","ABSTAIN","6/100","Interactive Evaluation")
+                  for attempt in range(40):
                       text=page.locator("body").inner_text(timeout=10000)
-                  except Exception:
-                      continue
-                  print("check",attempt+1,"page title:",page.title(),"seen:",[x for x in required if x in text],flush=True)
-                  if all(x in text for x in required):
-                      break
-                  if "Yes, get this app back up" in text:
-                      page.get_by_text("Yes, get this app back up").click()
-              else:
-                  raise RuntimeError("Real app verification failed: missing "+repr([x for x in required if x not in text])+"; observed "+repr(text[:500]))
-              if "Unexpected Application Error" in text or "Unable to preload CSS" in text:
-                  raise RuntimeError("Site showed an error instead of app")
-              page.screenshot(path=str(out),full_page=False,animations="disabled")
-              browser.close()
-          print("Verified screenshot:",out,"bytes:",out.stat().st_size,"sha256:",hashlib.sha256(out.read_bytes()).hexdigest(),flush=True)
+                      seen=[term for term in required if term in text]
+                      print(f"attempt={attempt+1} seen={seen} bodylen={len(text)}",flush=True)
+                      if len(seen)==len(required): break
+                      page.wait_for_timeout(1500)
+                  else:
+                      raise RuntimeError("App not verified: "+repr(text[:900]))
+                  if "Unexpected Application Error" in text or "Unable to preload CSS" in text:
+                      raise RuntimeError("Application error detected in real screenshot")
+                  page.wait_for_timeout(1000)
+                  page.screenshot(path=str(out),full_page=False,animations="disabled")
+                  browser.close()
+              print("GENUINE APP SCREENSHOT OK",out,"bytes",out.stat().st_size,
+                    "sha256",hashlib.sha256(out.read_bytes()).hexdigest(),flush=True)
+          finally:
+              server.terminate()
           PY
-      - name: Publish verified screenshot to capture branch
+      - name: Publish verified screenshot (capture branch only)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/assets/soiltrust-live-demo-2026-11-16.png
-          git commit -m "docs: capture verified real SoilTrust Streamlit demo" || exit 1
+          git add docs/assets/soiltrust-v03-genuine-streamlit-demo.png
+          git commit -m "docs: capture actual running SoilTrust Streamlit v0.3 UI" || exit 1
           git push
